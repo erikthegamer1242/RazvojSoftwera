@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget android-packageName="com.EED.app" id="com.EED.app" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+    <name>EED</name>
+    <description>Sample Apache Cordova App</description>
+    <author email="dev@cordova.apache.org" href="https://cordova.apache.org">
+        Apache Cordova Team
+    </author>
+    <content src="index.html" />
+    <access origin="*" />
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    <allow-intent href="tel:*" />
+    <allow-intent href="sms:*" />
+    <allow-intent href="mailto:*" />
+    <allow-intent href="geo:*" />
+    <preference name="BackgroundColor" value="0x00ffffff"/>
+    <preference name="AllowNewWindows" value="false"/>
+    <preference name="MediaPlaybackAllowsAirPlay" value="true"/>
+    <preference name="AllowsAirPlayForMediaPlayback" value="true"/>
+    <preference name="AllowBackForwardNavigationGestures" value="false"/>
+    <preference name="Allow3DTouchLinkPreview" value="true"/>
+    <preference name="AutoHideSplashScreen" value="true"/>
+    <preference name="ShowSplashScreenSpinner" value="false"/>
+    <preference name="SplashMaintainAspectRatio" value="true"/>
+    <preference name="SplashShowOnlyFirstTime" value="true"/>
+    <preference name="ScrollEnabled" value="true" />
+    <preference name="webviewbounce" value="false" />
+    <preference name="DisallowOverscroll" value="true" />
+    <preference name="StatusBarOverlaysWebView" value="true" />
+    <preference name="StatusBarStyle" value="default" />
+    <preference name="StatusBarBackgroundColor" value="#ffffffff" />
+    <preference name="AndroidXEnabled" value="true" />
+    <platform name="android">
+        <uses-feature android:name="android.hardware.usb.host" />
+        <config-file parent="/manifest/application/activity[@android:name='MainActivity']" target="AndroidManifest.xml">
+            <intent-filter>
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+            </intent-filter>
+            <meta-data android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" android:resource="@xml/device_filter" />
+        </config-file>
+        <resource-file src="www/res/xml/device_filter.xml" target="app/src/main/res/xml/device_filter.xml" />
+    </platform>
+</widget>
