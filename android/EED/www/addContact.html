@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full w-full">
+<head>
+    <meta charset="UTF-8">
+    <title>addContact</title>
+    <script type="text/javascript" src="cordova.js"></script>
+    <script src="js/addContact.js"></script>
+    <link rel="stylesheet" href="css/out.css">
+</head>
+<body class="bg-gray-600">
+    <div class="w-full h-fit flex-col">
+        <div class="w-full h-1/10 bg-gray-600 flex justify-start items-center border-none">
+            <button id="back" class="bg-blue-500 text-white font-bold py-2 px-4 rounded-full text-4xl h-fit m-2"><img src="img/arrow_back_white_24dp.svg"></button>
+        </div>
+        <div class="w-full h-9/10 bg-gray-600 border-none">
+            <form id="addContactForm" class="flex flex-col justify-evenly items-center h-fit w-full my-2">
+                <input type="text" id="korisnik" placeholder="Name" class="bg-gray-300 text-black font-bold py-2 px-4 text-4xl h-fit w-5/10 my-1">
+                <input type="text" id="number" placeholder="Number" class="bg-gray-300 text-black font-bold py-2 px-4 text-4xl h-fit w-5/10 my-1">
+                <button id="submit" class="bg-blue-500 text-white font-bold py-2 px-4 rounded-full text-4xl h-fit my-1 w-5/10 items-center">ADD</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

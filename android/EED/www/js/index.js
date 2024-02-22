@@ -1,117 +1,81 @@
-// Global variables
-var device_platform;
-var autoscroll = true;
-var show_timestamp = true;
-var usb_enabled = false;
-var last_tic = 0;
-var N_messages = 0;
-var show_raw_input = false; // [-] Show raw input data
-var N_messages_max = 100; // [-] max number of messages
+var db = null;
+var contactsList = null;
+var contacts = []
+var ids = []
+document.addEventListener('deviceready', function() {
+    db = window.sqlitePlugin.openDatabase({
+        name: 'my.db',
+        location: 'default',
+    });
+    navigator.geolocation.getCurrentPosition(onSuccess, onError);
+    db.transaction(function(tx) {
+        tx.executeSql('CREATE TABLE IF NOT EXISTS contacts ' +
+            '(' +
+            'ID     INTEGER PRIMARY KEY, ' +
+            'name   TEXT NOT NULL' +
+            ')'
+        );
+        //clear database
 
-var baudrate = 115200; // [bps] baud rate
-var databits = 8; // [-] number of data bits
-var stopbits = 1; // [-] number of stop bits
-var parity = 0; // [-] type of parity
-var dtr = true; // [-] data terminal ready signal
-var rts = false; // [-] request to send signal
-var sleep_on_pause = false; // [-] sleep while app is not active
+        // tx.executeSql('DELETE FROM contacts');
+        // tx.executeSql('INSERT INTO contacts VALUES (?,?)', [1, 'EED1']);
+        // tx.executeSql('INSERT INTO contacts VALUES (?,?)', [2, 'EED2']);
 
-var detect_android_notch_dt = 100; // [ms] Time interval for andorid notch check
-var usb_enable_dt = 200; // [ms] Time interval for ble enabled check
-var same_message_dt = 1; // [ms] Time interval allowed for same message
+        tx.executeSql('SELECT * FROM contacts', [], function(tx, res) {
+            for (var i = 0; i < res.rows.length; i++) {
+                console.log('Row ID: ' + res.rows.item(i).ID + ' Name: ' + res.rows.item(i).name);
+                // alert('Row ID: ' + res.rows.item(i).ID + ' Name: ' + res.rows.item(i).name);
+                contacts.push(res.rows.item(i).name);
+                ids.push(res.rows.item(i).ID);
+                contactsList = document.getElementById('contactList');
+                let div = document.createElement('div');
+                let circle = document.createElement('span');
+                let name = document.createElement('span');
+                circle.innerHTML = res.rows.item(i).name[0];
+                circle.classList = 'grid place-items-center mb-0.5 mt-0.5 bg-blue-500  rounded-full w-10 h-10';
+                name.innerHTML = res.rows.item(i).name;
+                name.classList = 'text-white text-3xl  p-2';
+                div.classList = 'bg-grey-600 p-2 m-2 w-screen flex place-items-center';
+                div.appendChild(circle);
+                div.appendChild(name);
+                div.addEventListener('click', function() {
+                    alert('contact clicked');
+                    window.document.location = 'messages.html';
+                    window.localStorage.setItem('name', name.innerHTML);
+                    window.localStorage.setItem('id', ids[contacts.indexOf(div.children[1].innerHTML)]);
+                });
+                contactsList.appendChild(div);
+            }
+        });
+    }, function(error) {
+        alert('Transaction ERROR: ' + error.message);
+        console.log('Transaction ERROR: ' + error.message);
+    }, function() {
+        console.log('Populated database OK');
+    });
 
-var send_loop; // [-] output loop identifier
-var send_dt = 2000; // [ms] Time interval for output
-var send_idx; // [-] output packet index
-
-// Event listeners
-document.addEventListener('deviceready', onDeviceReady, false);
-
-function onDeviceReady() {
-	showAllowUSB();
-	checkEnableUSB();
+    document.getElementById('sos').addEventListener('click', function() {
+        console.log('sos clicked');
+    });
+    document.getElementById('addContact').addEventListener('click', function() {
+        console.log('addContact clicked');
+        window.document.location = 'addContact.html';
+    });
+});
+function onSuccess(pos) {
+    var lat = pos.coords.latitude;
+    var lng = pos.coords.longitude;
+    alert("lat : " + lat + " lng : " + lng);
 }
 
-function openSerial() {
-	SerialUSB.open({
-		baudRate: baudrate,
-		dataBits: databits,
-		stopBits: stopbits,
-		parity: parity,
-		dtr: dtr,
-		rts: rts,
-		sleepOnPause: sleep_on_pause
-	}, function (success_message) {
-		showMessage('success_message: ' + success_message);
-		usb_connected = true;
-		send_idx = 0;
-		send_loop = setInterval(function () {
-			send_idx++;
-			var data_out = 'Cordova packet ' + send_idx;
-			SerialUSB.write(data_out);
-			showMessage('Data out: ' + data_out);
-		}, send_dt);
-		SerialUSB.registerReadCallback(
-			function (data) {
-				readData(data);
-			}, function (err) {
-				showMessage('Error: ' + err);
-			}
-		);
-		SerialUSB.detached(
-			function (success_message) {
-			
-			}, function (err) {
-				usb_connected = false;
-				showAllowUSB();
-				checkEnableUSB();
-				clearInterval(send_loop);
-			}
-		);
-	}, function (err) {
-		showMessage('Error: ' + err);
-		clearInterval(send_loop);
-	});
+function onError(error) {
+    alert('code: ' + error.code + '\n' + 'message: ' + error.message + '\n');
 }
-
-function readData(data) {
-	showMessage('Data in: ' + String.fromCharCode(...new Uint8Array(data)));
-}
-
-function checkEnableUSB() {
-	SerialUSB.requestPermission(
-		function success() {
-			usb_enabled = true;
-			document.getElementById('allow-usb').style.display = 'none';
-			document.getElementById('allow-usb-error').textContent = '';
-			document.getElementById('terminal-panel').style.overflowY = 'scroll';
-			updateMessagesScroll();
-			openSerial();
-		}, function error(err) {
-			document.getElementById('allow-usb-error').textContent = 'Error: ' + err;
-			usb_enabled = false;
-			showAllowUSB();
-			setTimeout(checkEnableUSB, usb_enable_dt);
-		});
-}
-
-function showAllowUSB() {
-	document.getElementById('terminal-panel').scrollTop = 0;
-	document.getElementById('allow-usb').style.display = 'block';
-	document.getElementById('terminal-panel').style.overflowY = 'hidden';
-}
-
-function updateMessagesScroll() {
-	var bcr = document.getElementById('messages').getBoundingClientRect();
-	document.getElementById('terminal-panel').scrollTop = bcr.height;
-}
-
-function showMessage(msg) {
-	document.getElementById('pinkyPoruka').innerText = msg;
-	var msgContainer = document.getElementById('massageContainer');
-	var newMsg = document.createElement('div');
-	newMsg.innerText = msg;
-	newMsg.className = 'bg-pink-300 p-2 rounded-lg max-w-8/10 m-2';
-	msgContainer.appendChild(newMsg);
-	msgContainer.scrollTop = msgContainer.scrollHeight;
-}
+// function contactClicked(div) {
+//     alert('contact clicked');
+//     window.localStorage.setItem('name', div.innerHTML);
+//     var i = contacts.indexOf(div.innerHTML);
+//     window.localStorage.setItem('id', res.rows.item(i).ID);
+//     alert(window.localStorage.getItem('id'));
+//     window.document.location = 'messages.html';
+// }
