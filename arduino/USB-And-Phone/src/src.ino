@@ -1,6 +1,6 @@
 #include <SPI.h>
 #include <LoRa.h>
-#include "mesh/LoRaMesh.h"
+#include <LoRaMesh.h>
 #include "DebugHelper.h"
 #include "Helper.h"
 

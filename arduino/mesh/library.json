@@ -1,0 +1,15 @@
+{
+    "name": "LoRaMesh",
+    "keywords": "lora, mesh",
+    "description": "An Arduino library to create a mesh network using LoRa, RFM95 and the lora library from Sandeep Mistry",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/erikthegamer1242/RazvojSoftwera/tree/main/arduino/mesh"
+    },
+    "version": "1.0",
+    "frameworks": "arduino",
+    "platforms": [
+        "atmelavr",
+        "espressif"
+    ]
+}

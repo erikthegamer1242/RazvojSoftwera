@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "mesh/LoRaMesh.h"
+#include <LoRaMesh.h>
 
 extern LoRaMesh loramesh;
 
