@@ -39,7 +39,7 @@ document.addEventListener('deviceready', function() {
                 div.appendChild(circle);
                 div.appendChild(name);
                 div.addEventListener('click', function() {
-                    alert('contact clicked');
+                    // alert('contact clicked');
                     window.document.location = 'messages.html';
                     window.localStorage.setItem('name', name.innerHTML);
                     window.localStorage.setItem('id', ids[contacts.indexOf(div.children[1].innerHTML)]);
@@ -56,6 +56,11 @@ document.addEventListener('deviceready', function() {
 
     document.getElementById('sos').addEventListener('click', function() {
         console.log('sos clicked');
+        //clear database
+        db.transaction(function(tx) {
+            tx.executeSql('DELETE FROM contacts');
+            tx.executeSql('DELETE FROM messages');
+        });
     });
     document.getElementById('addContact').addEventListener('click', function() {
         console.log('addContact clicked');
@@ -65,7 +70,7 @@ document.addEventListener('deviceready', function() {
 function onSuccess(pos) {
     var lat = pos.coords.latitude;
     var lng = pos.coords.longitude;
-    alert("lat : " + lat + " lng : " + lng);
+    // alert("lat : " + lat + " lng : " + lng);
 }
 
 function onError(error) {

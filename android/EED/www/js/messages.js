@@ -24,8 +24,6 @@ var send_loop; // [-] output loop identifier
 var send_dt = 2000; // [ms] Time interval for output
 var send_idx; // [-] output packet index
 
-var db = null; // [-] database object
-
 var msgContainer = null;
 var bean = null;
 var html = null;
@@ -37,7 +35,9 @@ var textInput = null;
 var back = null;
 var gps = null;
 var maxMsg = 0;
-var myID = 2;
+var myID = 3;
+var lastHeight = 0;
+
 // Event listeners
 document.addEventListener('deviceready', onDeviceReady, false);
 
@@ -54,11 +54,11 @@ function onDeviceReady() {
         tx.executeSql('CREATE TABLE IF NOT EXISTS messages ' + '(' + 'ID     INTEGER,' + 'received	INTEGER,' + 'ack		INTEGER,' + 'msgID		INTEGER,' + 'data       TEXT' + ')');
 
         // clear the table
-        tx.executeSql('DELETE FROM messages');
-        tx.executeSql('INSERT INTO messages (ID, received, ack, msgID, data) VALUES (?,?,?,?,?)', [1, 0, 0, 1, 'Hello World']);
-        tx.executeSql('INSERT INTO messages (ID, received, ack, msgID, data) VALUES (?,?,?,?,?)', [1, 1, 0, 2, 'Lorem Ipsum']);
-        tx.executeSql('INSERT INTO messages (ID, received, ack, msgID, data) VALUES (?,?,?,?,?)', [1, 0, 1, 3, 'Dolor Sit']);
-        tx.executeSql('INSERT INTO messages (ID, received, ack, msgID, data) VALUES (?,?,?,?,?)', [1, 1, 1, 4, 'Amet']);
+        // tx.executeSql('DELETE FROM messages');
+        // tx.executeSql('INSERT INTO messages (ID, received, ack, msgID, data) VALUES (?,?,?,?,?)', [1, 0, 0, 1, 'Hello World']);
+        // tx.executeSql('INSERT INTO messages (ID, received, ack, msgID, data) VALUES (?,?,?,?,?)', [1, 1, 0, 2, 'Lorem Ipsum']);
+        // tx.executeSql('INSERT INTO messages (ID, received, ack, msgID, data) VALUES (?,?,?,?,?)', [1, 0, 1, 3, 'Dolor Sit']);
+        // tx.executeSql('INSERT INTO messages (ID, received, ack, msgID, data) VALUES (?,?,?,?,?)', [1, 1, 1, 4, 'Amet']);
 
         tx.executeSql('SELECT * FROM messages', [], function (tx, res) {
             for (var i = 0; i < res.rows.length; i++) {
@@ -74,7 +74,6 @@ function onDeviceReady() {
         alert('Transaction ERROR: ' + error.message);
         console.log('Transaction ERROR: ' + error.message);
     }, function () {
-        populatedDatabase = true;
         console.log('Populated database OK');
     });
 
@@ -105,11 +104,46 @@ function onDeviceReady() {
     checkEnableUSB();
 }
 
+function openSerial() {
+    SerialUSB.open({
+        baudRate: baudrate,
+        dataBits: databits,
+        stopBits: stopbits,
+        parity: parity,
+        dtr: dtr,
+        rts: rts,
+        sleepOnPause: sleep_on_pause
+    }, function (success_message) {
+        showMessage('success_message: ' + success_message);
+        SerialUSB.write(myID);
+        usb_connected = true;
+        SerialUSB.registerReadCallback(
+            function (data) {
+                readData(data);
+            }, function (err) {
+                showMessage('Error: ' + err);
+            }
+        );
+        SerialUSB.detached(
+            function (success_message) {
+
+            }, function (err) {
+                usb_connected = false;
+                showAllowUSB();
+                checkEnableUSB();
+            }
+        );
+    }, function (err) {
+        showMessage('Error: ' + err);
+    });
+}
+
 function displayMsg(ID, received, ack, msgID, data) {
     msgContainer = document.getElementById('massageContainer');
     var Msg = document.createElement('div');
     var newMsg = document.createElement('div');
     newMsg.innerText = data;
+    newMsg.id = msgID;
     if (received == 0) {
         Msg.className = 'flex bg-gray-600 w-screen justify-end my-4';
         if (ack == 1) {
@@ -126,71 +160,10 @@ function displayMsg(ID, received, ack, msgID, data) {
     msgContainer.scrollTop = msgContainer.scrollHeight;
 }
 
-
-function sendMsg(){
-    alert('sendMsg')
-    maxMsg++;
-    SerialUSB.write('w:' + myID + ':' + window.localStorage.getItem('id') + ',' + maxMsg + ':' + textInput.value);
-    //insert into database
-    db.transaction(function (tx) {
-        tx.executeSql('INSERT INTO messages (ID, received, ack, msgID, data) VALUES (?,?,?,?,?)', [window.localStorage.getItem('id'), 0, 0, maxMsg, textInput.value]);
-    }, function (error) {
-        alert('Transaction ERROR: ' + error.message);
-        console.log('Transaction ERROR: ' + error.message);
-    }, function () {
-        populatedDatabase = true;
-        console.log('Populated database OK');
-    });
-    displayMsg(window.localStorage.getItem('id'), 0, 0, maxMsg, textInput.value);
-    textInput.value = '';
-}
-function openSerial() {
-    SerialUSB.open({
-        baudRate: baudrate,
-        dataBits: databits,
-        stopBits: stopbits,
-        parity: parity,
-        dtr: dtr,
-        rts: rts,
-        sleepOnPause: sleep_on_pause
-    }, function (success_message) {
-        showMessage('success_message: ' + success_message);
-        usb_connected = true;
-        send_idx = 0;
-        send_loop = setInterval(function () {
-            send_idx++;
-            var data_out = 'Cordova packet ' + send_idx;
-            SerialUSB.write(data_out);
-            showMessage('Data out: ' + data_out);
-        }, send_dt);
-        SerialUSB.registerReadCallback(
-            function (data) {
-                readData(data);
-            }, function (err) {
-                showMessage('Error: ' + err);
-            }
-        );
-        SerialUSB.detached(
-            function (success_message) {
-
-            }, function (err) {
-                usb_connected = false;
-                showAllowUSB();
-                checkEnableUSB();
-                clearInterval(send_loop);
-            }
-        );
-    }, function (err) {
-        showMessage('Error: ' + err);
-        clearInterval(send_loop);
-    });
-}
-
-function readData(data) {
-    data = String.fromCharCode(...new Uint8Array(data));
-    alert('Data in: ' + data);
-    // showMessage('Data in: ' + String.fromCharCode(...new Uint8Array(data)));
-}
+// function readData(data) {
+//     showMessage('Data in: ' + String.fromCharCode(...new Uint8Array(data)));
+//
+// }dadad
 
 function checkEnableUSB() {
     SerialUSB.requestPermission(
@@ -209,6 +182,28 @@ function checkEnableUSB() {
         });
 }
 
+function sendMsg(){
+    if(textInput.value == ''){
+        return;
+    }
+    maxMsg++;
+    // alert('sendMsg ' + 'w:' + myID + ':' + window.localStorage.getItem('id') + ':' + maxMsg + ':' + textInput.value.toString())
+    displayMsg(window.localStorage.getItem('id'), 0, 0, maxMsg, textInput.value);
+    SerialUSB.write('w:' + myID + ':' + window.localStorage.getItem('id') + ':' + maxMsg + ':' + textInput.value.toString());
+    //insert into database
+    db.transaction(function (tx) {
+        var data = textInput.value;
+        tx.executeSql('INSERT INTO messages (ID, received, ack, msgID, data) VALUES (?,?,?,?,?)', [window.localStorage.getItem('id'), 0, 0,maxMsg ,textInput.value]);
+    }, function (error) {
+        alert('Transaction ERROR: ' + error.message);
+        console.log('Transaction ERROR: ' + error.message);
+    }, function () {
+        console.log('Populated database OK');
+        textInput.value = '';
+    });
+}
+
+
 function showAllowUSB() {
     // document.getElementById('terminal-panel').scrollTop = 0;
     // document.getElementById('allow-usb').style.display = 'block';
@@ -220,21 +215,37 @@ function updateMessagesScroll() {
     // document.getElementById('terminal-panel').scrollTop = bcr.height;
 }
 
-//recursion chech hight of screen and ajust the height of msgContaner
+function showMessage(msg) {
+    // alert(msg);
+    // var msgContainer = document.getElementById('massageContainer');
+    // var newMsg = document.createElement('div');
+    // newMsg.innerText = msg;
+    // newMsg.className = 'bg-pink-300 p-2 rounded-lg max-w-8/10 m-2';
+    // msgContainer.appendChild(newMsg);
+    // msgContainer.scrollTop = msgContainer.scrollHeight;
+}
+
 async function checkHeight() {
     msgContainer = document.getElementById('massageContainer');
     nameHeader = document.getElementById('nameHeader');
     bean = document.getElementById('bean');
     html = document.getElementById('body');
     msgContainer.style.height = html.offsetHeight - bean.offsetHeight - nameHeader.offsetHeight + 'px';
-    msgContainer.scrollTop = msgContainer.scrollHeight;
+    if(lastHeight != msgContainer.scrollHeight) {
+        msgContainer.scrollTop = msgContainer.scrollHeight;
+    }
+    lastHeight = msgContainer.scrollHeight;
     setInterval(checkHeight, 100);
 }
+
+
 function readData(data) {
     var msg = String.fromCharCode(...new Uint8Array(data));
-    displayMsg(window.localStorage.getItem('id'), 1, 0, 0, msg);
+    // alert('readData ' + msg);
+    // displayMsg(window.localStorage.getItem('id'), 1, 0, 0, msg);
 
     if(msg.charAt(0) == 'a'){
+        alert('ack ' + msg)
         var msgData = msg.split(':');
         db.transaction(function (tx) {
             tx.executeSql('UPDATE messages SET ack = 1 WHERE msgID = ?', [msgData[1]]);
@@ -242,13 +253,16 @@ function readData(data) {
             alert('Transaction ERROR: ' + error.message);
             console.log('Transaction ERROR: ' + error.message);
         }, function () {
-            populatedDatabase = true;
             console.log('Populated database OK');
         });
+        alert('msgData[2] ' + msgData[2] + ' window.localStorage.getItem(id) ' + window.localStorage.getItem('id'));
+        if(msgData[2].charAt(0) == window.localStorage.getItem('id').charAt(0)){ //TODO: fix this to compare numbers not strings
+            document.getElementById(msgData[1]).className = 'bg-blue-500 p-2 rounded-lg max-w-8/10 m-2';
+        }
         // displayMsg(msgData[1], 1, 0, msgData[2], msgData[3]);
     }
 
-    if(msg.charAt(0) == 'w'){
+    if(msg.charAt(0) == 'r'){
         var msgData = msg.split(':');
         db.transaction(function (tx) {
             tx.executeSql('INSERT INTO messages (ID, received, ack, msgID, data) VALUES (?,?,?,?,?)', [msgData[1], 1, 0, msgData[2], msgData[3]]);
@@ -256,7 +270,7 @@ function readData(data) {
             alert('Transaction ERROR: ' + error.message);
             console.log('Transaction ERROR: ' + error.message);
         }, function () {
-            populatedDatabase = true;
+            alert('added new msg ' + msgData[3]);
             console.log('Populated database OK');
         });
         displayMsg(msgData[1], 1, 0, msgData[2], msgData[3]);
