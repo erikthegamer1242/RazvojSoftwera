@@ -35,7 +35,7 @@ var textInput = null;
 var back = null;
 var gps = null;
 var maxMsg = 0;
-var myID = 3;
+var myID = 2;
 var lastHeight = 0;
 
 // Event listeners
@@ -49,17 +49,17 @@ function onDeviceReady() {
     db = window.sqlitePlugin.openDatabase({
         name: 'my.db', location: 'default'
     });
-
+    
     db.transaction(function (tx) {
         tx.executeSql('CREATE TABLE IF NOT EXISTS messages ' + '(' + 'ID     INTEGER,' + 'received	INTEGER,' + 'ack		INTEGER,' + 'msgID		INTEGER,' + 'data       TEXT' + ')');
-
+        
         // clear the table
         // tx.executeSql('DELETE FROM messages');
         // tx.executeSql('INSERT INTO messages (ID, received, ack, msgID, data) VALUES (?,?,?,?,?)', [1, 0, 0, 1, 'Hello World']);
         // tx.executeSql('INSERT INTO messages (ID, received, ack, msgID, data) VALUES (?,?,?,?,?)', [1, 1, 0, 2, 'Lorem Ipsum']);
         // tx.executeSql('INSERT INTO messages (ID, received, ack, msgID, data) VALUES (?,?,?,?,?)', [1, 0, 1, 3, 'Dolor Sit']);
         // tx.executeSql('INSERT INTO messages (ID, received, ack, msgID, data) VALUES (?,?,?,?,?)', [1, 1, 1, 4, 'Amet']);
-
+        
         tx.executeSql('SELECT * FROM messages', [], function (tx, res) {
             for (var i = 0; i < res.rows.length; i++) {
                 maxMsg = Math.max(res.rows.item(i).msgID, maxMsg);
@@ -76,12 +76,12 @@ function onDeviceReady() {
     }, function () {
         console.log('Populated database OK');
     });
-
+    
     displayName = document.getElementById('displayName');
     displayName.textContent = window.localStorage.getItem('name');
     circle = document.getElementById('circle');
     circle.innerHTML = window.localStorage.getItem('name').charAt(0);
-
+    
     textInput = document.getElementById('textInput');
     sendBtn = document.getElementById('sendBtn');
     sendBtn.addEventListener('click', sendMsg);
@@ -98,20 +98,10 @@ function onDeviceReady() {
             alert('Error: ' + error.message);
         });
     });
-
-    navigator.notification.prompt(
-        'Please enter your name',  // message
-        onPrompt,                  // callback to invoke
-        'Registration',            // title
-        ['Ok', 'Exit'],             // buttonLabels
-        'Jane Doe'                 // defaultText
-    );
     
     checkHeight();
     showAllowUSB();
     checkEnableUSB();
-
-
 }
 
 function openSerial() {
@@ -128,20 +118,20 @@ function openSerial() {
         SerialUSB.write(myID);
         usb_connected = true;
         SerialUSB.registerReadCallback(
-            function (data) {
-                readData(data);
-            }, function (err) {
-                showMessage('Error: ' + err);
-            }
+                function (data) {
+                    readData(data);
+                }, function (err) {
+                    showMessage('Error: ' + err);
+                }
         );
         SerialUSB.detached(
-            function (success_message) {
-
-            }, function (err) {
-                usb_connected = false;
-                showAllowUSB();
-                checkEnableUSB();
-            }
+                function (success_message) {
+                
+                }, function (err) {
+                    usb_connected = false;
+                    showAllowUSB();
+                    checkEnableUSB();
+                }
         );
     }, function (err) {
         showMessage('Error: ' + err);
@@ -173,27 +163,26 @@ function displayMsg(ID, received, ack, msgID, data) {
 // function readData(data) {
 //     showMessage('Data in: ' + String.fromCharCode(...new Uint8Array(data)));
 //
-// }
+// }dadad
 
 function checkEnableUSB() {
     SerialUSB.requestPermission(
-        function success() {
-            usb_enabled = true;
-            // document.getElementById('allow-usb').style.display = 'none';
-            // document.getElementById('allow-usb-error').textContent = '';
-            // document.getElementById('terminal-panel').style.overflowY = 'scroll';
-            // updateMessagesScroll();
-            openSerial();
-        }, function error(err) {
-            // document.getElementById('allow-usb-error').textContent = 'Error: ' + err;
-            usb_enabled = false;
-            showAllowUSB();
-            setTimeout(checkEnableUSB, usb_enable_dt);
-        });
+            function success() {
+                usb_enabled = true;
+                // document.getElementById('allow-usb').style.display = 'none';
+                // document.getElementById('allow-usb-error').textContent = '';
+                // document.getElementById('terminal-panel').style.overflowY = 'scroll';
+                // updateMessagesScroll();
+                openSerial();
+            }, function error(err) {
+                // document.getElementById('allow-usb-error').textContent = 'Error: ' + err;
+                usb_enabled = false;
+                showAllowUSB();
+                setTimeout(checkEnableUSB, usb_enable_dt);
+            });
 }
 
 function sendMsg(){
-    navigator.notification.beep(2);
     if(textInput.value == ''){
         return;
     }
@@ -254,7 +243,7 @@ function readData(data) {
     var msg = String.fromCharCode(...new Uint8Array(data));
     // alert('readData ' + msg);
     // displayMsg(window.localStorage.getItem('id'), 1, 0, 0, msg);
-
+    
     if(msg.charAt(0) == 'a'){
         alert('ack ' + msg)
         var msgData = msg.split(':');
@@ -272,7 +261,7 @@ function readData(data) {
         }
         // displayMsg(msgData[1], 1, 0, msgData[2], msgData[3]);
     }
-
+    
     if(msg.charAt(0) == 'r'){
         var msgData = msg.split(':');
         db.transaction(function (tx) {
@@ -284,7 +273,9 @@ function readData(data) {
             alert('added new msg ' + msgData[3]);
             console.log('Populated database OK');
         });
-        displayMsg(msgData[1], 1, 0, msgData[2], msgData[3]);
-        navigator.notification.beep(2);
+        if(msgData[1].charAt(0) == window.localStorage.getItem('id').charAt(0)) { //TODO: fix this to compare numbers not strings{ }
+            displayMsg(msgData[1], 1, 0, msgData[2], msgData[3]);
+        }
+        navigator.notification.beep(1);
     }
 }
