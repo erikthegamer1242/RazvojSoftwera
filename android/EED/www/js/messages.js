@@ -34,9 +34,10 @@ var nameHeader = null;
 var circle = null;
 var sendBtn = null;
 var textInput = null;
-var maxMsg = 0;
-var myID = 3;
 var back = null;
+var gps = null;
+var maxMsg = 0;
+var myID = 2;
 // Event listeners
 document.addEventListener('deviceready', onDeviceReady, false);
 
@@ -82,6 +83,7 @@ function onDeviceReady() {
     circle = document.getElementById('circle');
     circle.innerHTML = window.localStorage.getItem('name').charAt(0);
 
+    textInput = document.getElementById('textInput');
     sendBtn = document.getElementById('sendBtn');
     sendBtn.addEventListener('click', sendMsg);
     back = document.getElementById('back');
@@ -89,7 +91,17 @@ function onDeviceReady() {
         // alert('back clicked')
         window.document.location = 'index.html';
     });
+    gps = document.getElementById('gpsBtn');
+    gps.addEventListener('click', function () {
+        navigator.geolocation.getCurrentPosition(function (pos){
+            textInput.value += " " + pos.coords.latitude.toString() + " " + pos.coords.longitude.toString();
+        }, function (error){
+            alert('Error: ' + error.message);
+        });
+    });
+
     checkHeight();
+    showAllowUSB();
     checkEnableUSB();
 }
 
@@ -117,7 +129,6 @@ function displayMsg(ID, received, ack, msgID, data) {
 
 function sendMsg(){
     alert('sendMsg')
-    textInput = document.getElementById('textInput');
     maxMsg++;
     SerialUSB.write('w:' + myID + ':' + window.localStorage.getItem('id') + ',' + maxMsg + ':' + textInput.value);
     //insert into database
@@ -152,19 +163,23 @@ function openSerial() {
             SerialUSB.write(data_out);
             showMessage('Data out: ' + data_out);
         }, send_dt);
-        SerialUSB.registerReadCallback(function (data) {
-            readData(data);
-        }, function (err) {
-            showMessage('Error: ' + err);
-        });
-        SerialUSB.detached(function (success_message) {
+        SerialUSB.registerReadCallback(
+            function (data) {
+                readData(data);
+            }, function (err) {
+                showMessage('Error: ' + err);
+            }
+        );
+        SerialUSB.detached(
+            function (success_message) {
 
-        }, function (err) {
-            usb_connected = false;
-            showAllowUSB();
-            checkEnableUSB();
-            clearInterval(send_loop);
-        });
+            }, function (err) {
+                usb_connected = false;
+                showAllowUSB();
+                checkEnableUSB();
+                clearInterval(send_loop);
+            }
+        );
     }, function (err) {
         showMessage('Error: ' + err);
         clearInterval(send_loop);
@@ -172,7 +187,52 @@ function openSerial() {
 }
 
 function readData(data) {
+    data = String.fromCharCode(...new Uint8Array(data));
+    alert('Data in: ' + data);
+    // showMessage('Data in: ' + String.fromCharCode(...new Uint8Array(data)));
+}
+
+function checkEnableUSB() {
+    SerialUSB.requestPermission(
+        function success() {
+            usb_enabled = true;
+            // document.getElementById('allow-usb').style.display = 'none';
+            // document.getElementById('allow-usb-error').textContent = '';
+            // document.getElementById('terminal-panel').style.overflowY = 'scroll';
+            // updateMessagesScroll();
+            openSerial();
+        }, function error(err) {
+            // document.getElementById('allow-usb-error').textContent = 'Error: ' + err;
+            usb_enabled = false;
+            showAllowUSB();
+            setTimeout(checkEnableUSB, usb_enable_dt);
+        });
+}
+
+function showAllowUSB() {
+    // document.getElementById('terminal-panel').scrollTop = 0;
+    // document.getElementById('allow-usb').style.display = 'block';
+    // document.getElementById('terminal-panel').style.overflowY = 'hidden';
+}
+
+function updateMessagesScroll() {
+    // var bcr = document.getElementById('messages').getBoundingClientRect();
+    // document.getElementById('terminal-panel').scrollTop = bcr.height;
+}
+
+//recursion chech hight of screen and ajust the height of msgContaner
+async function checkHeight() {
+    msgContainer = document.getElementById('massageContainer');
+    nameHeader = document.getElementById('nameHeader');
+    bean = document.getElementById('bean');
+    html = document.getElementById('body');
+    msgContainer.style.height = html.offsetHeight - bean.offsetHeight - nameHeader.offsetHeight + 'px';
+    msgContainer.scrollTop = msgContainer.scrollHeight;
+    setInterval(checkHeight, 100);
+}
+function readData(data) {
     var msg = String.fromCharCode(...new Uint8Array(data));
+    displayMsg(window.localStorage.getItem('id'), 1, 0, 0, msg);
 
     if(msg.charAt(0) == 'a'){
         var msgData = msg.split(':');
@@ -201,42 +261,4 @@ function readData(data) {
         });
         displayMsg(msgData[1], 1, 0, msgData[2], msgData[3]);
     }
-    showMessage('Data in: ' + msg);
-}
-
-function checkEnableUSB() {
-    // SerialUSB.requestPermission(
-    // 	function success() {
-    // 		usb_enabled = true;
-    // 		document.getElementById('allow-usb').style.display = 'none';
-    // 		document.getElementById('allow-usb-error').textContent = '';
-    // 		document.getElementById('terminal-panel').style.overflowY = 'scroll';
-    // 		updateMessagesScroll();
-    // 		openSerial();
-    // 	}, function error(err) {
-    // 		document.getElementById('allow-usb-error').textContent = 'Error: ' + err;
-    // 		usb_enabled = false;
-    // 		showAllowUSB();
-    // 		setTimeout(checkEnableUSB, usb_enable_dt);
-    // 	});
-}
-
-function showMessage(msg) {
-    msgContainer = document.getElementById('massageContainer');
-    var newMsg = document.createElement('div');
-    newMsg.innerText = msg;
-    newMsg.className = 'bg-pink-300 p-2 rounded-lg max-w-8/10 m-2';
-    msgContainer.appendChild(newMsg);
-    msgContainer.scrollTop = msgContainer.scrollHeight;
-}
-
-//recursion chech hight of screen and ajust the height of msgContaner
-async function checkHeight() {
-    msgContainer = document.getElementById('massageContainer');
-    nameHeader = document.getElementById('nameHeader');
-    bean = document.getElementById('bean');
-    html = document.getElementById('body');
-    msgContainer.style.height = html.offsetHeight - bean.offsetHeight - nameHeader.offsetHeight + 'px';
-    msgContainer.scrollTop = msgContainer.scrollHeight;
-    setInterval(checkHeight, 100);
 }

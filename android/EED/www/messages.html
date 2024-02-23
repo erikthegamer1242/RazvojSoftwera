@@ -1,33 +1,7 @@
 <!DOCTYPE html>
-<!--
-    Licensed to the Apache Software Foundation (ASF) under one
-    or more contributor license agreements.  See the NOTICE file
-    distributed with this work for additional information
-    regarding copyright ownership.  The ASF licenses this file
-    to you under the Apache License, Version 2.0 (the
-    "License"); you may not use this file except in compliance
-    with the License.  You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing,
-    software distributed under the License is distributed on an
-    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-     KIND, either express or implied.  See the License for the
-    specific language governing permissions and limitations
-    under the License.
--->
 <html id="html" class="h-screen w-screen">
     <head>
         <meta charset="utf-8">
-        <!--
-        Customize this policy to fit your own app's needs. For more guidance, please refer to the docs:
-            https://cordova.apache.org/docs/en/latest/
-        Some notes:
-            * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
-            * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
-                * Enable inline JS: add 'unsafe-inline' to default-src
-        -->
         <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
         <meta name="format-detection" content="telephone=no">
         <meta name="msapplication-tap-highlight" content="no">
@@ -45,10 +19,14 @@
     </div>
 
     <div id="massageContainer" class="m-0 bg-gray-600 overflow-y-auto overflow-x-hidden text-white ">
-
     </div>
 
     <div id="bean" class="h-60 w-screen flex bg-gray-500 text-white m-0">
+        <div class="flex justify-center items-center">
+            <button id="gpsBtn" class="bg-blue-500 text-white font-bold py-2 px-4 rounded-full w-fit">
+                <img src="img/share_location_white_24dp.svg">
+            </button>
+        </div>
         <textarea id ="textInput" rows="2" class="h-full  max-h-xs block py-1 px-2 w-11/12 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"></textarea>
         <div class="flex justify-center items-center">
             <button id="sendBtn" class="bg-blue-500 text-white font-bold py-2 px-4 rounded-full w-fit">
@@ -59,6 +37,67 @@
     </div>
 
     <script src="cordova.js"></script>
-    <script src="js/messages.js"></script>
+<!--    <script src="js/messages.js"></script>-->
+    <script src="js/test.js"></script>
     </body>
 </html>
+
+
+
+<!--<html class="h-screen w-screen">-->
+<!--<head>-->
+<!--    <meta charset="utf-8">-->
+<!--    &lt;!&ndash;-->
+<!--    Customize this policy to fit your own app's needs. For more guidance, please refer to the docs:-->
+<!--        https://cordova.apache.org/docs/en/latest/-->
+<!--    Some notes:-->
+<!--        * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly-->
+<!--        * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:-->
+<!--            * Enable inline JS: add 'unsafe-inline' to default-src-->
+<!--    &ndash;&gt;-->
+<!--    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">-->
+<!--    <meta name="format-detection" content="telephone=no">-->
+<!--    <meta name="msapplication-tap-highlight" content="no">-->
+<!--    <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">-->
+<!--    <meta name="color-scheme" content="light dark">-->
+<!--    <link rel="stylesheet" href="css/index.css">-->
+<!--    <link rel="stylesheet" href="css/out.css">-->
+<!--    &lt;!&ndash;        <link rel="stylesheet" href="css/output.css">&ndash;&gt;-->
+<!--    <script defer src="js/index.js"></script>-->
+<!--    <title>Hello World</title>-->
+<!--</head>-->
+<!--<body id="body" class="w-screen h-screen flex-1 overflow-hidden" style="width: 100%; height: 100%">-->
+<!--<div class="bg-gray-800 overflow-hidden h-1/10 text-white  w-screen  flex place-items-center">-->
+<!--    <a href="contacts.html"><img src="slike/arrow_back_white_24dp.svg" class="p-1 h-full" alt=""></a>-->
+<!--    <span id="circle" class="grid place-items-center mb-0.5 mt-0.5 bg-blue-500 dot ">L</span>-->
+<!--    <span id="name" class="text-white text-3xl  p-2"> Luka Galunić</span>-->
+<!--</div>-->
+<!--<div id="massageContainer" class="m-0 bg-gray-600 overflow-y-auto overflow-x-hidden text-white m-0 h-8/10">-->
+<!--    <div class="flex bg-gray-600 w-screen justify-end my-4">-->
+<!--        <div class="bg-blue-500 p-2 rounded-lg max-w-8/10 mx-2">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores debitis hic id iure minima nobis nulla, quos tempore voluptatum? Aspernatur, corporis debitis libero perferendis rem repudiandae suscipit? Natus necessitatibus, quam.</div>-->
+<!--    </div>-->
+<!--    <div class="flex bg-gray-600 w-screen justify-start my-4">-->
+<!--        <div id="pinkyPoruka" class="bg-pink-300 p-2 rounded-lg max-w-8/10 mx-2">Lorem ipsum dolor sit amet, consectetur adipisicing elit.-->
+<!--            Dicta enim error, ipsam labore quasi quia reiciendis repudiandae sint! Eligendi fugiat itaque laboriosam-->
+<!--            magnam maxime molestiae quae quos rem voluptatem voluptatum!20-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div id="terminal-panel">-->
+<!--        <div id="allow-usb">-->
+<!--            Give application permission to access device serial port to be able to read data from USB device.-->
+<!--            <div id="allow-usb-error">-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div id="messages">-->
+
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<div id="bean" class="h-1/10 w-screen flex-col bg-gray-500 text-white m-0  grid place-items-center" >-->
+<!--    <textarea id ="display" rows="2" class="mx-1 h-43/48 block py-1 px-2 w-11/12 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"></textarea>-->
+<!--</div>-->
+<!--<script src="cordova.js"></script>-->
+<!--<script src="js/test.js"></script>-->
+<!--</body>-->
+<!--</html>-->

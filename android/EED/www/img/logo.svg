@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 23.0.2, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 300 300" style="enable-background:new 0 0 300 300;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#3B82F6;}
+	.st1{fill:#0000FF;}
+	.st2{fill:#F9A8D4;}
+	.st3{fill:#FFFFFF;}
+</style>
+<symbol  id="RSS" viewBox="-9.8 -9.8 19.6 19.6">
+	<path id="circle_2_" class="st0" d="M-4.6-7.2c0-1.5-1.2-2.6-2.6-2.6c-1.5,0-2.6,1.2-2.6,2.6c0,1.4,1.2,2.6,2.6,2.6
+		C-5.7-4.6-4.6-5.7-4.6-7.2z"/>
+	<path class="st0" d="M3.1-9.7h-3.5c0,2.5-1,4.8-2.8,6.5c-1.7,1.7-4,2.7-6.5,2.8v3.5C-2.7,3,3-2.7,3.1-9.7L3.1-9.7z"/>
+	<path class="st0" d="M9.8-9.7H6.4c-0.1,8.8-7.2,16-16,16v3.5C1,9.7,9.7,1,9.8-9.7L9.8-9.7z"/>
+</symbol>
+<g id="Layer_1">
+</g>
+<g id="Layer_2">
+	<path class="st1" d="M86,242"/>
+	<path class="st1" d="M86,242"/>
+	<g>
+		<g>
+			<path class="st2" d="M216,163c0,0,25.7,19.6,47.7,20.9c3.6,0.2,8.3,0,8.3,0s-16.2-9.6-21-24.9c-1.4-4.6-1.4-8.9-1-12"/>
+			<ellipse class="st2" cx="199.5" cy="107.5" rx="83.5" ry="57.5"/>
+		</g>
+		<g>
+			<path class="st3" d="M114.4,197c0,0-25.7,19.6-47.7,20.9c-3.6,0.2-8.3,0-8.3,0s16.2-9.6,21-24.9c1.4-4.6,1.4-8.9,1-12"/>
+			<ellipse class="st3" cx="130.9" cy="141.5" rx="83.5" ry="57.5"/>
+		</g>
+		<g>
+			<path class="st0" d="M108,202c0,0-25.7,19.6-47.7,20.9c-3.6,0.2-8.3,0-8.3,0s16.2-9.6,21-24.9c1.4-4.6,1.4-8.9,1-12"/>
+			<ellipse class="st0" cx="124.5" cy="146.5" rx="83.5" ry="57.5"/>
+		</g>
+		<g>
+			<path class="st3" d="M112.2,185.3c0,0-17.1,21-34.8,26.4c-2.9,0.9-6.8,1.6-6.8,1.6s11.3-11,12.2-24.4c0.3-4.1-0.6-7.5-1.5-10"/>
+			<ellipse class="st3" cx="123.8" cy="147.5" rx="71.9" ry="49.5"/>
+		</g>
+	</g>
+	
+		<use xlink:href="#RSS"  width="19.6" height="19.6" id="XMLID_1_" x="-9.8" y="-9.8" transform="matrix(2.5095 -2.567 -2.5666 -2.5091 123.7876 136.936)" style="overflow:visible;"/>
+</g>
+</svg>
