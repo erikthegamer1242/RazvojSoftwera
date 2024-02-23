@@ -99,9 +99,19 @@ function onDeviceReady() {
         });
     });
 
+    navigator.notification.prompt(
+        'Please enter your name',  // message
+        onPrompt,                  // callback to invoke
+        'Registration',            // title
+        ['Ok', 'Exit'],             // buttonLabels
+        'Jane Doe'                 // defaultText
+    );
+    
     checkHeight();
     showAllowUSB();
     checkEnableUSB();
+
+
 }
 
 function openSerial() {
@@ -163,7 +173,7 @@ function displayMsg(ID, received, ack, msgID, data) {
 // function readData(data) {
 //     showMessage('Data in: ' + String.fromCharCode(...new Uint8Array(data)));
 //
-// }dadad
+// }
 
 function checkEnableUSB() {
     SerialUSB.requestPermission(
@@ -183,6 +193,7 @@ function checkEnableUSB() {
 }
 
 function sendMsg(){
+    navigator.notification.beep(2);
     if(textInput.value == ''){
         return;
     }
@@ -274,5 +285,6 @@ function readData(data) {
             console.log('Populated database OK');
         });
         displayMsg(msgData[1], 1, 0, msgData[2], msgData[3]);
+        navigator.notification.beep(2);
     }
 }
