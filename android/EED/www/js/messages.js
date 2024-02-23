@@ -79,8 +79,8 @@ function onDeviceReady() {
     
     displayName = document.getElementById('displayName');
     displayName.textContent = window.localStorage.getItem('name');
-    circle = document.getElementById('circle');
-    circle.innerHTML = window.localStorage.getItem('name').charAt(0);
+    // circle = document.getElementById('circle');
+    // circle.innerHTML = window.localStorage.getItem('name').charAt(0);
     
     textInput = document.getElementById('textInput');
     sendBtn = document.getElementById('sendBtn');
@@ -145,15 +145,15 @@ function displayMsg(ID, received, ack, msgID, data) {
     newMsg.innerText = data;
     newMsg.id = msgID;
     if (received == 0) {
-        Msg.className = 'flex bg-gray-600 w-screen justify-end my-4';
+        Msg.className = 'flex bg-black w-screen justify-end my-4';
         if (ack == 1) {
-            newMsg.className = 'bg-blue-500 p-2 rounded-lg max-w-8/10 m-2';
+            newMsg.className = 'bg-green-1000 p-2 rounded-lg max-w-8/10 m-2';
         } else {
             newMsg.className = 'bg-red-800 p-2 rounded-lg max-w-8/10 m-2';
         }
     } else {
-        Msg.className = 'flex bg-gray-600 w-screen justify-start my-4';
-        newMsg.className = 'bg-pink-300 p-2 rounded-lg max-w-8/10 m-2';
+        Msg.className = 'flex bg-black w-screen justify-start my-4';
+        newMsg.className = 'bg-purple-600 p-2 rounded-lg max-w-8/10 m-2';
     }
     Msg.appendChild(newMsg);
     msgContainer.appendChild(Msg);
@@ -226,16 +226,16 @@ function showMessage(msg) {
 }
 
 async function checkHeight() {
-    msgContainer = document.getElementById('massageContainer');
-    nameHeader = document.getElementById('nameHeader');
-    bean = document.getElementById('bean');
-    html = document.getElementById('body');
-    msgContainer.style.height = html.offsetHeight - bean.offsetHeight - nameHeader.offsetHeight + 'px';
-    if(lastHeight != msgContainer.scrollHeight) {
-        msgContainer.scrollTop = msgContainer.scrollHeight;
-    }
-    lastHeight = msgContainer.scrollHeight;
-    setInterval(checkHeight, 100);
+    // msgContainer = document.getElementById('massageContainer');
+    // nameHeader = document.getElementById('nameHeader');
+    // bean = document.getElementById('bean');
+    // html = document.getElementById('body');
+    // msgContainer.style.height = html.offsetHeight - bean.offsetHeight - nameHeader.offsetHeight + 'px';
+    // if(lastHeight != msgContainer.scrollHeight) {
+    //     msgContainer.scrollTop = msgContainer.scrollHeight;
+    // }
+    // lastHeight = msgContainer.scrollHeight;
+    // setInterval(checkHeight, 100);
 }
 
 

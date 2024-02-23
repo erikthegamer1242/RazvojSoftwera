@@ -74,6 +74,7 @@ module.exports = {
 					700: "#047857",
 					800: "#065f46",
 					900: "#064e3b",
+					1000: "#00ff00",
 				},
 				blue: {
 					50: "#eff6ff",
@@ -257,5 +258,14 @@ module.exports = {
 	},
 	variants: {
 		textColor: ['responsive', 'hover', 'focus', 'group-hover'],
+	},
+	top: {
+		'1/2': '50%',
+		'59': '60px',
+	},
+	bottom: {
+		'1/2': '50%',
+		'59': '60px',
+		'0': '0px',
 	},
 }

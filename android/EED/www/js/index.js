@@ -31,12 +31,12 @@ document.addEventListener('deviceready', function() {
                 let div = document.createElement('div');
                 let circle = document.createElement('span');
                 let name = document.createElement('span');
-                circle.innerHTML = res.rows.item(i).name[0];
-                circle.classList = 'grid place-items-center mb-0.5 mt-0.5 bg-blue-500  rounded-full w-10 h-10';
+                // circle.innerHTML = res.rows.item(i).name[0];
+                // circle.classList = 'grid place-items-center mb-0.5 mt-0.5 bg-blue-500  rounded-full w-10 h-10';
                 name.innerHTML = res.rows.item(i).name;
-                name.classList = 'text-white text-3xl  p-2';
-                div.classList = 'bg-grey-600 p-2 m-2 w-screen flex place-items-center';
-                div.appendChild(circle);
+                name.classList = 'text-white text-2xl p-2';
+                div.classList = 'bg-purple-600 p-2 m-2 w-screen flex place-items-center justify-center';
+                // div.appendChild(circle);
                 div.appendChild(name);
                 div.addEventListener('click', function() {
                     // alert('contact clicked');
