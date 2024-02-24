@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+#Clear old docs
+rm -rf html/ xml/ latex/ LoRaMesh.pdf README.md
+
 doxygen #Generate HTML, LaTex and XML documentation
 cd latex/
 make #Create PDF from LaTex

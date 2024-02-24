@@ -68,6 +68,7 @@ int LoRaMesh::loraSetup(int myID, int ssPin, int rst, int dio0)
     this->myID = myID;
     setPins(ssPin, rst, dio0);
     if (!begin(868E6)) return 0;
+    if (!callbackAckFlag || !callbackDataFlag) return 0; 
     routingTable[this->myID] = {this->myID, 0};
     knownRoutes.push_back(this->myID);
     return 1;
@@ -83,6 +84,7 @@ int LoRaMesh::loraSetup(int myID, int ssPin, int rst, int dio0)
 void LoRaMesh::readMsgCallback(std::function<void(int, int, String)> callbackData) //
 {
     callbackDataFunction = callbackData;
+    callbackDataFlag = true;
     debugPrintln("readMsgCallback");
 }
 
@@ -95,6 +97,7 @@ void LoRaMesh::readMsgCallback(std::function<void(int, int, String)> callbackDat
 void LoRaMesh::readAckCallback(std::function<void(int, int)> callbackAck)
 {
     callbackAckFunction = callbackAck;
+    callbackAckFlag = true;
     debugPrintln("readAckCallback");
 }
 

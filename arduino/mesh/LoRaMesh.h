@@ -26,6 +26,8 @@ private:
   unsigned short int myID; /**< ID of this node. */
   std::function<void(int, int, String)> callbackDataFunction; /**< Registered user function for handling messages. */
   std::function<void(int, int)> callbackAckFunction; /**< Registered user function for handling acknolegments. */
+  bool callbackDataFlag = false; /**< Flag to indicate if a callback function for data messages is registered. */
+  bool callbackAckFlag = false; /**< Flag to indicate if a callback function for acknowledgment messages is registered. */
 public:
     byte typeDataMessage = 0, /**< Data type packet. */
     typeRoutingMessage = 1, /**< Routing type packet. */
