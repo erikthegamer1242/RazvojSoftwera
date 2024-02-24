@@ -76,6 +76,6 @@ function onDeviceReady() {
 		});
 	});
 	document.getElementById('addContact').addEventListener('click', function () {
-		window.document.location = 'add_contact.html';
+		window.document.location = 'addContact.html';
 	});
 }

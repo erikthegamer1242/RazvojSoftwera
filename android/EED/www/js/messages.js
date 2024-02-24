@@ -85,8 +85,8 @@ function onDeviceReady() {
             alert('Error: ' + error.message);
         });
     });
-    
-    checkHeight();
+
+    alert('fas1');
     showAllowUSB();
     checkEnableUSB();
 }
@@ -189,7 +189,7 @@ function sendMsg(){
         return;
     }
     maxMsg++;
-    // alert('sendMsg ' + 'w:' + myID + ':' + window.localStorage.getItem('id') + ':' + maxMsg + ':' + textInput.value.toString())
+    alert('sendMsg ' + 'w:' + myID + ':' + window.localStorage.getItem('id') + ':' + maxMsg + ':' + textInput.value.toString())
     displayMsg(window.localStorage.getItem('id'), 0, 0, maxMsg, textInput.value);
     SerialUSB.write('w:' + myID + ':' + window.localStorage.getItem('id') + ':' + maxMsg + ':' + textInput.value.toString());
     //insert into database
@@ -226,20 +226,6 @@ function showMessage(msg) {
     // msgContainer.appendChild(newMsg);
     // msgContainer.scrollTop = msgContainer.scrollHeight;
 }
-
-async function checkHeight() {
-    // msgContainer = document.getElementById('massageContainer');
-    // nameHeader = document.getElementById('nameHeader');
-    // bean = document.getElementById('bean');
-    // html = document.getElementById('body');
-    // msgContainer.style.height = html.offsetHeight - bean.offsetHeight - nameHeader.offsetHeight + 'px';
-    // if(lastHeight != msgContainer.scrollHeight) {
-    //     msgContainer.scrollTop = msgContainer.scrollHeight;
-    // }
-    // lastHeight = msgContainer.scrollHeight;
-    // setInterval(checkHeight, 100);
-}
-
 
 function readData(data) {
     
