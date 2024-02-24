@@ -53,7 +53,8 @@ void menu(String incoming) { // Print help
     else Serial.println("Invalid command, for help type h");
 }
 
-boolean isNumeric(String str) { // Check if string is numeric
+// Check if string is numeric
+boolean isNumeric(String str) {
     unsigned int stringLength = str.length();
  
     if (stringLength == 0) {

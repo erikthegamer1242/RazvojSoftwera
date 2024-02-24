@@ -26,8 +26,6 @@
 #error "Wrong board!"
 #endif
 
-
-
 unsigned long startT;
 unsigned long currT;
 unsigned long endT = 5e3;

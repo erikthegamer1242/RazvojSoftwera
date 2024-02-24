@@ -130,3 +130,7 @@ dist
 **/docs/html
 **/mojZip.sh
 **/EED
+**/docs/latex
+**/docs/xml
+!LoRaMesh.pdf
+!API.md
