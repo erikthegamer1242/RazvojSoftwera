@@ -133,4 +133,4 @@ dist
 **/docs/latex
 **/docs/xml
 !LoRaMesh.pdf
-!API.md
+!README.md

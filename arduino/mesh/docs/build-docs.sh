@@ -6,5 +6,5 @@ make #Create PDF from LaTex
 mv refman.pdf ../LoRaMesh.pdf
 cd ..
 cd xml
-moxygen --output API.md . #Create markdown from XML
-mv API.md ../
+moxygen --output README.md . #Create markdown from XML
+mv README.md ../
