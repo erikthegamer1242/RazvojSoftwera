@@ -3,7 +3,13 @@
 
 extern LoRaMesh loramesh;
 
-void prepareAndSendMessage(String incoming) { // Prepare and send message
+/**
+ * This function takes the incoming data as String,
+ * oragnizes it, and sends a message to the LoRaMesh network.
+ *
+ * @param[in] incoming Incoming data to be sent
+ */
+void prepareAndSendMessage(String incoming) {
   int sendID = 0;
   int recvID = 0;
   int msgID = 0;
@@ -37,14 +43,25 @@ void prepareAndSendMessage(String incoming) { // Prepare and send message
   loramesh.meshSend(loramesh.createMessagePacket(message, recvID, msgID));
 }
 
-//Help menu for the user
+/**
+ * String that contains the help message for the user
+ * to understand the commands that can be used.
+ *
+ */
 String help = 
     "Commands:\n"
     "For help, type h\n"
     "To get the routing table, type p\n"
     "To send a message, type the following command in this format: w:{sendID}:{recvID}:{msgID}:{msgData}\n";
 
-void menu(String incoming) { // Print help
+/**
+ * A function that takes incoming data from the user menu and 
+ * checks if it is a valid command, and if it is, it will
+ * execute the command.
+ *
+ * @param[in] incoming Incoming data from the user menu
+ */
+void menu(String incoming) { 
     debugPrint("I received: ");
     debugPrintln(incoming);
     if (incoming[0] == 'p') loramesh.printRoutingTable();
@@ -53,7 +70,13 @@ void menu(String incoming) { // Print help
     else Serial.println("Invalid command, for help type h");
 }
 
-// Check if string is numeric
+/**
+ * This function iterates through a string and checks if
+ * the string contains all numbers.
+ *
+ * @param[in] str String to be checked
+ * @return True if the string contains all numbers, false otherwise
+ */
 boolean isNumeric(String str) {
     unsigned int stringLength = str.length();
  

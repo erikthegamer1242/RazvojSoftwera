@@ -4,7 +4,9 @@
 #include "DebugHelper.h"
 #include "Helper.h"
 
-
+/** Pin mapping of the LoRa module based on the board used
+ * for compiling the code.
+ */
 #if defined(CONFIG_IDF_TARGET_ESP32C3)
 #pragma message "Using ESP32C3"
 #define ssPin 5
@@ -13,7 +15,12 @@
 #define SCK 4
 #define MISO 1
 #define MOSI 10
-#define C3 1
+/** Considering we are using an ESP WROVER E module and the C3 
+ * mini module, both get detected as the ESP32 so we check for 
+ * CONFIG_IDF_TARGET_ESP32C3 before and set this flag if its 
+ * the C3 mini used later in the code
+ * */
+#define C3 1 
 
 #elif defined(CONFIG_IDF_TARGET_ESP32)
 #pragma message "Using ESP32"
@@ -26,26 +33,45 @@
 #error "Wrong board!"
 #endif
 
-unsigned long startT;
-unsigned long currT;
-unsigned long endT = 5e3;
+unsigned long startT; /**< Variable to store the start time of the loop */
+unsigned long currT; /**< Variable to store the current time of the loop */
+unsigned long endT = 5e3; /**< The time between sending each routing packet */
 
 bool debugging = false;
 
 LoRaMesh loramesh;
 
+/**
+ * Callback function that handles the received acknowledgment packet.
+ * 
+ * @param [in] msgId The ID of the message.
+ * @param [in] from The sender of the acknowledgment.
+ */
 void readAckCallback(int msgId, int from)
 {
   String ackForMsgID = "a:" + String(msgId) + ":" + String(from);
   Serial.println(ackForMsgID);
 }
 
+/**
+ * Callback function that handles the received message packet.
+ * 
+ * @param from The sender of the message.
+ * @param msgId The ID of the message.
+ * @param msg The content of the message.
+ */
 void readMsgCallback(int from, int msgId, String msg)
 {
   String message = "r:" + String(from) + ":" + String(msgId) + ":" + msg;
   Serial.println(message);
 }
 
+/**
+ * Function to setup the LoRa module and the serial monitor.
+ * The function will prompt the user to input the ID of the device.
+ * and then initialize the LoRa module with the given ID.
+ * 
+ */
 void setup()
 {
   Serial.begin(115200);
@@ -57,6 +83,7 @@ void setup()
     myID = Serial.readString();
     myID.trim();
   } while (!isNumeric(myID));
+
   int myID_Int = myID.toInt();
   debugPrintln(myID);
   if (C3) SPI.begin(SCK, MISO, MOSI, SS);
@@ -71,6 +98,12 @@ void setup()
   debugPrintln("LoRa init succeeded.");
 }
 
+/**
+ * Function that is called in a loop to handle the routing of the packets
+ * and the user input from the serial monitor. Also, it checks for incoming
+ * packets and reads them.
+ * 
+ */
 void loop()
 {
   currT = millis();
