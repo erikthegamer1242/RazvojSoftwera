@@ -1,53 +1,72 @@
-var db = null;
-var contactsList = null;
-var contacts = []
-var ids = []
+let /** @type{?globalDatabaseObject} */ db = null;/** Object used to access a sqlite database. */
+var debuging = true;  //TODO set to false before release
 
-document.addEventListener('deviceready', onDeviceReady, false);
+document.addEventListener('deviceready', onDeviceReady); /** Event listener when app is started. */
 
-function loadContacts(){
-
+/**
+ * Adds a contact to the page.
+ * @param item Equal to row of the contacts table.
+ */
+function addContactToPage(item){
+//	if (debuging) alert(`addContactToPage(${item.name},${item.ID})`);
+	let div = document.createElement('div');
+	div.classList = 'bg-purple-600 p-2 m-2 w-screen flex place-items-center justify-center';
+	let name = document.createElement('span');
+	name.innerHTML = item.name;
+	name.classList = 'text-white text-2xl p-2';
+	div.appendChild(name);
+	div.addEventListener('click', contactClicked, false);
+	div.name = item.name;
+	div.ID = item.ID;
+	let contactsList = document.getElementById('contactList');
+	contactsList.appendChild(div);
 }
 
-function onDeviceReady() {
-	db = window.sqlitePlugin.openDatabase({
-		name: 'my.db', location: 'default',
-	});
+/**
+ * Load contacts from database and displays them to the page.
+ */
+function loadContacts(){
+	// if (debuging) alert(`loadContacts()`);
 	db.transaction(function (tx) {
-		tx.executeSql('CREATE TABLE IF NOT EXISTS contacts ' + '(' + 'ID     INTEGER PRIMARY KEY, ' + 'name   TEXT NOT NULL' + ')');
-		tx.executeSql('SELECT * FROM contacts', [], function (tx, res) {
-			for (var i = 0; i < res.rows.length; i++) {
+		tx.executeSql(`CREATE TABLE IF NOT EXISTS contacts ` + `(` + `ID     INTEGER PRIMARY KEY, ` + `name   TEXT NOT NULL` + `)`);
+		tx.executeSql(`SELECT * FROM contacts`, [], function (tx, res) {
+			for (let i = 0; i < res.rows.length; i++) {
 				console.log('Row ID: ' + res.rows.item(i).ID + ' Name: ' + res.rows.item(i).name);
-				// alert('Row ID: ' + res.rows.item(i).ID + ' Name: ' + res.rows.item(i).name);
-				contacts.push(res.rows.item(i).name);
-				ids.push(res.rows.item(i).ID);
-				contactsList = document.getElementById('contactList');
-				let div = document.createElement('div');
-				let circle = document.createElement('span');
-				let name = document.createElement('span');
-				// circle.innerHTML = res.rows.item(i).name[0];
-				// circle.classList = 'grid place-items-center mb-0.5 mt-0.5 bg-blue-500  rounded-full w-10 h-10';
-				name.innerHTML = res.rows.item(i).name;
-				name.classList = 'text-white text-2xl p-2';
-				div.classList = 'bg-purple-600 p-2 m-2 w-screen flex place-items-center justify-center';
-				// div.appendChild(circle);
-				div.appendChild(name);
-				div.addEventListener('click', function () {
-					// alert('contact clicked');
-					window.document.location = 'messages.html';
-					window.localStorage.setItem('name', name.innerHTML);
-					window.localStorage.setItem('id', ids[contacts.indexOf(div.children[1].innerHTML)]);
-				});
-				contactsList.appendChild(div);
+				addContactToPage(res.rows.item(i));
 			}
 		});
 	}, function (error) {
-		alert('Transaction ERROR: ' + error.message);
+		// if (debuging) alert('Transaction ERROR: ' + error.message);
 		console.log('Transaction ERROR: ' + error.message);
 	}, function () {
 		console.log('Populated database OK');
 	});
-	
+}
+
+/**
+ * When a contact is clicked, save the name and id to local storage and redirect to messages.html.
+ * @param event Default event object from eventListener.
+ */
+function contactClicked(event) {
+	// if (debuging) alert(`contactClicked(${event.currentTarget.name},${event.currentTarget.ID})`);
+	window.localStorage.setItem('name', event.currentTarget.name);
+	window.localStorage.setItem('id',  event.currentTarget.ID);
+	window.document.location = 'messages.html';
+}
+
+/**
+ * When the device is ready, open the database, load contacts, and add event listeners to
+ * SOS button and Add Contact button.
+ */
+//TODO add sos button
+function onDeviceReady() {
+	// navigator.splashscreen.hide();
+	// if (debuging) alert(`onDeviceReady()`);
+	db = window.sqlitePlugin.openDatabase({
+		name: 'my.db', location: 'default',
+	});
+	loadContacts();
+
 	document.getElementById('sos').addEventListener('click', function () {
 		console.log('sos clicked');
 		//clear database
@@ -57,16 +76,6 @@ function onDeviceReady() {
 		});
 	});
 	document.getElementById('addContact').addEventListener('click', function () {
-		console.log('addContact clicked');
-		window.document.location = 'addContact.html';
+		window.document.location = 'add_contact.html';
 	});
 }
-
-// function contactClicked(div) {
-//     alert('contact clicked');
-//     window.localStorage.setItem('name', div.innerHTML);
-//     var i = contacts.indexOf(div.innerHTML);
-//     window.localStorage.setItem('id', res.rows.item(i).ID);
-//     alert(window.localStorage.getItem('id'));
-//     window.document.location = 'messages.html';
-// }

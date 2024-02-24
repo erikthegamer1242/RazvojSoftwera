@@ -92,6 +92,7 @@ function onDeviceReady() {
 }
 
 function openSerial() {
+    alert('openSerial');
     SerialUSB.open({
         baudRate: baudrate,
         dataBits: databits,
@@ -101,6 +102,7 @@ function openSerial() {
         rts: rts,
         sleepOnPause: sleep_on_pause
     }, function (success_message) {
+        alert('success_message: ' + success_message);
         showMessage('success_message: ' + success_message);
         showUsbStatus.src = 'img/usb_white_24dp.svg'
         showUsbStatus.className = 'bg-green-1000 h-full ml-auto float-right';
@@ -130,6 +132,13 @@ function openSerial() {
     });
 }
 
+/**
+ * @param {string} ID - The ID of the message.
+ * @param {int} received - The received status of the message.
+ * @param {int} ack - The ack status of the message.
+ * @param {int} msgID - The message ID.
+ * @param {string} data - The message data.
+ */
 function displayMsg(ID, received, ack, msgID, data) {
     msgContainer = document.getElementById('massageContainer');
     var Msg = document.createElement('div');
@@ -160,6 +169,7 @@ function displayMsg(ID, received, ack, msgID, data) {
 function checkEnableUSB() {
     SerialUSB.requestPermission(
             function success() {
+                alert('USB permission granted');
                 usb_enabled = true;
                 // document.getElementById('allow-usb').style.display = 'none';
                 // document.getElementById('allow-usb-error').textContent = '';
