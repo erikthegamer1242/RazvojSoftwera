@@ -30,6 +30,7 @@
     <preference name="StatusBarStyle" value="default" />
     <preference name="StatusBarBackgroundColor" value="#ffffffff" />
     <preference name="AndroidXEnabled" value="true" />
+    <icon src="www/img/logo.png"></icon>
     <platform name="android">
         <uses-feature android:name="android.hardware.usb.host" />
         <config-file parent="/manifest/application/activity[@android:name='MainActivity']" target="AndroidManifest.xml">

@@ -10,7 +10,7 @@ document.addEventListener('deviceready', onDeviceReady); /** Event listener when
 function addContactToPage(item){
 //	if (debuging) alert(`addContactToPage(${item.name},${item.ID})`);
 	let div = document.createElement('div');
-	div.classList = 'bg-purple-600 p-2 m-2 w-screen flex place-items-center justify-center';
+	div.classList = 'bg-purple-600 p-2 my-2 w-screen flex place-items-center justify-center';
 	let name = document.createElement('span');
 	name.innerHTML = item.name;
 	name.classList = 'text-white text-2xl p-2';

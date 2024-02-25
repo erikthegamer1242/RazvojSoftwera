@@ -15,7 +15,7 @@ let textInput = null; /** The element that gets the user input. */
 let back = null; /** The element that redirects to index.html. */
 let gps = null; /** The element that adds the GPS coordinates to the textarea. */
 let maxMsg = 0; /** The maximum message ID. */
-let myID = 2; /** The ID of the user. */
+let myID = 3; /** The ID of the user. */
 let showUsbStatus = null; /** The element that displays the USB status. */
 
 document.addEventListener('deviceready', onDeviceReady, false);
